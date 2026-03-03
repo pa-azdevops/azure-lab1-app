@@ -4,19 +4,14 @@ const sql = require('mssql');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Parse connection string manually
-const connectionString = process.env.DefaultConnection;
+// Azure automatically prefixes SQL connection strings with:
+// SQLAZURECONNSTR_<YourConnectionName>
 
-const config = {
-    server: connectionString.match(/Server=tcp:(.*?),/)[1],
-    database: connectionString.match(/Initial Catalog=(.*?);/)[1],
-    user: connectionString.match(/User ID=(.*?);/)[1],
-    password: connectionString.match(/Password=(.*?);/)[1],
-    options: {
-        encrypt: true,
-        trustServerCertificate: false
-    }
-};
+const connectionString = process.env.SQLAZURECONNSTR_DefaultConnection;
+
+if (!connectionString) {
+    console.error("❌ Connection string not found!");
+}
 
 app.get('/', (req, res) => {
     res.send('Azure + SQL Connected 🚀');
@@ -24,11 +19,20 @@ app.get('/', (req, res) => {
 
 app.get('/data', async (req, res) => {
     try {
-        await sql.connect(config);
+        await sql.connect({
+            connectionString: connectionString,
+            options: {
+                encrypt: true,
+                trustServerCertificate: false
+            }
+        });
+
         const result = await sql.query('SELECT * FROM TestTable');
         res.json(result.recordset);
+
     } catch (err) {
-        res.status(500).send(err.message);
+        console.error("Database error:", err);
+        res.status(500).send("Database connection failed: " + err.message);
     }
 });
 
