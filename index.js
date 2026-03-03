@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('Hello Purnesh! Azure Lab 1 is working 🚀');
+  res.send('Hello Purnesh! Azure Lab 1 is working 🚀 + Azure CI/CD working perfectly');
 });
 
 app.listen(port, () => {
