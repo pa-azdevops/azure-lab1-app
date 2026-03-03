@@ -1,0 +1,11 @@
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello Purnesh! Azure Lab 1 is working 🚀');
+});
+
+app.listen(port, () => {
+  console.log(`App running on port ${port}`);
+});
