@@ -4,13 +4,10 @@ const sql = require('mssql');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Azure automatically prefixes SQL connection strings with:
-// SQLAZURECONNSTR_<YourConnectionName>
-
-const connectionString = process.env.SQLAZURECONNSTR_DefaultConnection;
+const connectionString = process.env.DB_CONNECTION_STRING;
 
 if (!connectionString) {
-    console.error("❌ Connection string not found!");
+    console.error("❌ DB_CONNECTION_STRING not found!");
 }
 
 app.get('/', (req, res) => {
